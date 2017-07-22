@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrisyLUL", "FrisyLUL\FrisyLUL.csproj", "{08A94592-87E2-409A-B2AF-DC903CB0324F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrisyLULTest", "FrisyLULTest\FrisyLULTest.csproj", "{2D8A60F7-7067-4BDE-879F-AE092ED9E635}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{08A94592-87E2-409A-B2AF-DC903CB0324F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08A94592-87E2-409A-B2AF-DC903CB0324F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08A94592-87E2-409A-B2AF-DC903CB0324F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D8A60F7-7067-4BDE-879F-AE092ED9E635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D8A60F7-7067-4BDE-879F-AE092ED9E635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D8A60F7-7067-4BDE-879F-AE092ED9E635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D8A60F7-7067-4BDE-879F-AE092ED9E635}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

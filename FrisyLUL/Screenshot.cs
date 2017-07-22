@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace FrisyLUL
 {
-    class Screenshot : IDisposable
+    public class Screenshot : IDisposable
     {
         private Bitmap bitmap;
 
-        enum TernaryRasterOperations : uint
+        private enum TernaryRasterOperations : uint
         {
             SRCCOPY = 0x00CC0020,
             CAPTUREBLT = 0x40000000
