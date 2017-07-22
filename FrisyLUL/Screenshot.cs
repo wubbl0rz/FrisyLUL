@@ -77,8 +77,7 @@ namespace FrisyLUL
         public static Screenshot TakeScreenshot(string windowTitle) {
             windowTitle = windowTitle?.ToLower() ?? throw new ArgumentNullException(nameof(windowTitle));
 
-            var procs = Process.GetProcesses();
-            var handle = procs
+            var handle = Process.GetProcesses()
                 .Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle.ToLower().Contains(windowTitle))
                 .Select(proc => proc.MainWindowHandle)
                 .FirstOrDefault();
