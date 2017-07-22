@@ -76,8 +76,9 @@ namespace FrisyLUL
         /// <exception cref="ArgumentNullException">When window title is null.</exception>  
         public static Screenshot TakeScreenshot(string windowTitle) {
             windowTitle = windowTitle?.ToLower() ?? throw new ArgumentNullException(nameof(windowTitle));
-   
-            var handle = Process.GetProcesses()
+
+            var procs = Process.GetProcesses();
+            var handle = procs
                 .Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle.ToLower().Contains(windowTitle))
                 .Select(proc => proc.MainWindowHandle)
                 .FirstOrDefault();

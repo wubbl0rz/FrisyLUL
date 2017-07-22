@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using FrisyLUL;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -25,7 +26,7 @@ namespace FrisyLULTest.Test
         /// <summary>
         /// Name of a not existing process.
         /// </summary>
-        private String _notExistingProcess = "schrotty";
+        private String _notExistingProcess = "notExistingProcess";
 
         #region Screenshot.TakeScreenshot
 
@@ -136,12 +137,11 @@ namespace FrisyLULTest.Test
         /// An empty screenshot should have a height/ width of 1 pixel.
         /// </summary>
         [TestMethod]
+        [ExpectedException(typeof(FileNotFoundException))]
         public void TestSaveWithEmpty()
         {
             Screenshot.TakeScreenshot(_notExistingProcess).Save(@"tmp.png");
-            var img = Image.FromFile(@"tmp.png");
-
-            Assert.IsTrue(img.Size.Width == 1 && img.Size.Height == 1);
+            Image.FromFile(@"tmp.png"); //should throw an exception
         }
 
         #endregion
@@ -157,7 +157,9 @@ namespace FrisyLULTest.Test
         [TestMethod]
         public void TestToBase64WithEmpty()
         {
-            Screenshot.TakeScreenshot(_invalidProcess).ToBase64(ImageFormat.Png); //see you in /dev/null
+            Assert.IsTrue(String.IsNullOrEmpty(
+                Screenshot.TakeScreenshot(_invalidProcess).ToBase64(ImageFormat.Png))
+            ); //see you in /dev/null
         }
 
         #endregion
