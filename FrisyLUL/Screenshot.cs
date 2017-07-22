@@ -43,7 +43,7 @@ namespace FrisyLUL
             this.IsEmpty = true;
         }
 
-        public Screenshot(Bitmap bitmap) {
+        private Screenshot(Bitmap bitmap) {
             this.bitmap = bitmap;
         }
 
