@@ -23,7 +23,7 @@ namespace FrisyLUL
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            Screenshot sc = new Screenshot((Bitmap)Bitmap.FromFile(@"C:\Users\stream\Desktop\MouseWithoutBorders\ScreenCaptures\2017-07-09_30772987.JPG"));
+            Screenshot sc = Screenshot.TakeScreenshot("notepad");
 
             var apiKey = "4b18865d5488957";
 

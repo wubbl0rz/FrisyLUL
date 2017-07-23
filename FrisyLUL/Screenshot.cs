@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace FrisyLUL
 {
-    class Screenshot : IDisposable
+    public class Screenshot : IDisposable
     {
         private Bitmap bitmap;
 
-        enum TernaryRasterOperations : uint
+        private enum TernaryRasterOperations : uint
         {
             SRCCOPY = 0x00CC0020,
             CAPTUREBLT = 0x40000000
@@ -43,7 +43,7 @@ namespace FrisyLUL
             this.IsEmpty = true;
         }
 
-        public Screenshot(Bitmap bitmap) {
+        private Screenshot(Bitmap bitmap) {
             this.bitmap = bitmap;
         }
 
@@ -76,7 +76,7 @@ namespace FrisyLUL
         /// <exception cref="ArgumentNullException">When window title is null.</exception>  
         public static Screenshot TakeScreenshot(string windowTitle) {
             windowTitle = windowTitle?.ToLower() ?? throw new ArgumentNullException(nameof(windowTitle));
-   
+
             var handle = Process.GetProcesses()
                 .Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle.ToLower().Contains(windowTitle))
                 .Select(proc => proc.MainWindowHandle)
