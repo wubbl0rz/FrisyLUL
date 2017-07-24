@@ -25,25 +25,11 @@ namespace FrisyLUL
         {
             Screenshot sc = Screenshot.TakeScreenshot("notepad");
 
-            var apiKey = "4b18865d5488957";
+            OCR<FreeOCR> ocr = new OCR<FreeOCR>();
 
-            Console.WriteLine(sc.Width);
-            Console.WriteLine(sc.Height);
+            ocr.grabText(sc);
 
-            sc = sc.Extract(1600, 700, sc.Width - 1600, sc.Height - 700);
-
-            sc.Save("blub.png");
-
-            HttpClient httpClient = new HttpClient();
-
-            var content = new MultipartFormDataContent();
-
-            content.Add(new StringContent(apiKey), "apikey");
-            content.Add(new StringContent("data:image/png;base64," + sc.ToBase64(ImageFormat.Png)), "base64Image");
-
-            var result = httpClient.PostAsync("https://api.ocr.space/parse/image", content);
-
-            Console.WriteLine(result.Result.Content.ReadAsStringAsync().Result);
+            return;
 
             //httpClient.PostAsync
 

@@ -48,11 +48,15 @@ namespace FrisyLUL
         }
 
         public void Save(string filename) {
+            if(this.IsEmpty) return;
+
             this.bitmap.Save(filename);
         }
 
         public string ToBase64(ImageFormat format)
         {
+            if (this.IsEmpty) return string.Empty;
+            
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 this.bitmap.Save(memoryStream, format);

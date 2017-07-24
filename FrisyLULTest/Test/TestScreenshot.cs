@@ -16,10 +16,10 @@ namespace FrisyLULTest.Test
         /// <summary>
         /// Name of a valid process, which is running in the background and is not minimized.
         /// </summary>
-        private String _validProcess = "firefox";
+        private String _validProcess = "visual studio";
 
         /// <summary>
-        /// Name of an unvalid process, which is minimized.
+        /// Name of an invalid process, which is minimized.
         /// </summary>
         private String _invalidProcess = "notepad";
 
