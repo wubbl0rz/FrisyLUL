@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
@@ -10,64 +12,95 @@ using System.Threading.Tasks;
 
 namespace FrisyLUL
 {
-    class OCR<T> where T : IOCRservice, new()
+    class ObservableStringContent : StringContent
     {
-        public void grabText(Screenshot screenshot) {
-            var service = new T();
-            service.Scan(screenshot);
+        private IProgress<double> progress;
+
+        public ObservableStringContent(string content, IProgress<double> progress = null) : base(content)
+        {
+            this.progress = progress;
+        }
+
+        // eigene progress clase init with size
+
+        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+        {
+            this.TryComputeLength(out long size);
+            Console.WriteLine(size);
+
+            int cnt = 0;
+
+            return Task.Run(() =>
+            {
+                using (var content = base.ReadAsStreamAsync().Result)
+                {
+                    var buffer = new byte[512];
+                    int length;
+
+                    while ((length = content.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        ++cnt;
+                        this.progress.Report((int)(int)(int)(int)(int)(((double)(double)(double)(double)cnt *buffer.Length) / ((double)size) * 100));
+                        stream.Write(buffer, 0, length);
+                        stream.Flush();
+                    }
+                }
+            });
+
+            //return base.SerializeToStreamAsync(stream, context);
         }
     }
 
-    interface IOCRservice
-    {
-        string Scan(Screenshot screenshot);
-    }
-
-    class FreeOCR : IOCRservice
+    class FreeOCR
     {
         [DataContract]
         private class ResponseRoot
         {
-            [DataMember]
-            public int OCRExitCode;
+            [DataMember(Name = "OCRExitCode")]
+            public int ExitCode { get; private set; }
 
-            [DataMember]
-            public ResponseResult[] ParsedResults;
+            [DataMember(Name = "ParsedResults")]
+            public ResponseResult[] Results { get; private set; }
         }
 
         [DataContract]
         private class ResponseResult
         {
-            [DataMember]
-            public string ParsedText;
+            [DataMember(Name = "ParsedText")]
+            public string Text { get; private set; }
         }
 
         private string apiKey = "4b18865d5488957";
+        private string serviceUrl = "https://api.ocr.space/parse/image";
 
-        public string Scan(Screenshot screenshot)
+        private static HttpClient httpClient = new HttpClient();
+
+        public async Task<string> readText(Screenshot screenshot)
         {
-            HttpClient httpClient = new HttpClient();
-
             var content = new MultipartFormDataContent();
 
+            var p = new Progress<double>((y) => Console.WriteLine(y));
+
             content.Add(new StringContent(this.apiKey), "apikey");
-            content.Add(new StringContent("data:image/png;base64," + 
-                screenshot.ToBase64(ImageFormat.Png)), "base64Image");
+            content.Add(new ObservableStringContent("data:image/bmp;base64," + 
+                screenshot.ToBase64(ImageFormat.Bmp), p), "base64Image");
 
-            var result = httpClient.PostAsync("https://api.ocr.space/parse/image", content).Result;
+            using (var result = await FreeOCR.httpClient.PostAsync(this.serviceUrl, content))
+            {
+                if (!result.IsSuccessStatusCode) return string.Empty;
 
-            var json = result.Content.ReadAsStreamAsync().Result;
+                Console.WriteLine("DASHIER");
 
-            DataContractJsonSerializer ser = new
-                DataContractJsonSerializer(typeof(ResponseRoot));
+                using (var json = await result.Content.ReadAsStreamAsync())
+                {
+                    var root = new DataContractJsonSerializer(typeof(ResponseRoot))
+                        .ReadObject(json) as ResponseRoot;
 
-            ResponseRoot root = ser.ReadObject(json) as ResponseRoot;
+                    if (root.ExitCode != 1) return string.Empty;
 
-            if (root.OCRExitCode != 1) return string.Empty;
-            
-            Console.WriteLine(root.ParsedResults.First().ParsedText);
-
-            return "";
+                    return root.Results.First().Text;
+                }
+            }
         }
     }
 }

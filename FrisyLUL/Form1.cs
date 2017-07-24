@@ -21,13 +21,17 @@ namespace FrisyLUL
             InitializeComponent();
         }
 
-        private void Form1_Shown(object sender, EventArgs e)
+        private async void Form1_Shown(object sender, EventArgs e)
         {
             Screenshot sc = Screenshot.TakeScreenshot("notepad");
 
-            OCR<FreeOCR> ocr = new OCR<FreeOCR>();
+            FreeOCR ocr = new FreeOCR();
+            
+            Console.WriteLine(await ocr.readText(sc));
 
-            ocr.grabText(sc);
+            //OCR<FreeOCR> ocr = new OCR<FreeOCR>();
+
+            //ocr.grabText(sc);
 
             return;
 
