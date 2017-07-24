@@ -34,7 +34,7 @@ namespace FrisyLUL
                 {
                     var buffer = new byte[512];
                     
-                    for(int cnt = 0, length = 0; (length = content.Read(buffer, 0, buffer.Length)) > 0; ++cnt)
+                    for(int length, cnt = 1; (length = content.Read(buffer, 0, buffer.Length)) > 0; ++cnt)
                     {
                         this.progress.Report((int)((float)cnt*512/size*100));
                         stream.Write(buffer, 0, length);
