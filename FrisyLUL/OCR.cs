@@ -21,26 +21,22 @@ namespace FrisyLUL
             this.progress = progress;
         }
 
-        // eigene progress clase init with size
+        // eigene progress class init with size
 
         protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
             this.TryComputeLength(out long size);
             Console.WriteLine(size);
 
-            int cnt = 0;
-
             return Task.Run(() =>
             {
                 using (var content = base.ReadAsStreamAsync().Result)
                 {
                     var buffer = new byte[512];
-                    int length;
-
-                    while ((length = content.Read(buffer, 0, buffer.Length)) > 0)
+                    
+                    for(int length, cnt = 1; (length = content.Read(buffer, 0, buffer.Length)) > 0; ++cnt)
                     {
-                        ++cnt;
-                        this.progress.Report((int)(int)(int)(int)(int)(((double)(double)(double)(double)cnt *buffer.Length) / ((double)size) * 100));
+                        this.progress.Report((int)((float)cnt*buffer.Length/size*100));
                         stream.Write(buffer, 0, length);
                         stream.Flush();
                     }
