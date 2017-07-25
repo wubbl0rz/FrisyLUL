@@ -109,6 +109,19 @@ namespace FrisyLULTest.Test
         #region Screenshot.Extract
 
         /// <summary>
+        /// Test Extract with zero-height or zero-width destination image
+        /// </summary>
+        [TestMethod]
+        public void TestExtractWithZeroDestinations()
+        {
+            var shot = Screenshot.TakeScreenshot(_validProcess).Extract(0, 0, 100, 0);
+            shot.Dispose();
+
+            shot = Screenshot.TakeScreenshot(_validProcess).Extract(0, 0, 0, 100);
+            shot.Dispose();
+        }
+
+        /// <summary>
         /// Test Extract on an empty screenshot.
         /// An unvalid process/ screenshot should be empty.
         /// </summary>
