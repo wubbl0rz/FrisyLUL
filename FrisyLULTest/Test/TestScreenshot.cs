@@ -175,6 +175,30 @@ namespace FrisyLULTest.Test
             ); //see you in /dev/null
         }
 
+        /// <summary>
+        /// Test the ToBase64 method with null as ImageFormat
+        /// </summary>
+        [TestMethod]
+        public void TestToBase64WithNullFormat()
+        {
+            var shot = Screenshot.TakeScreenshot(_validProcess);
+            shot.ToBase64(null);
+            shot.Dispose();
+        }
+
+        /// <summary>
+        /// Test the ToBase64 method with new created ImageFormat
+        /// </summary>
+        [TestMethod]
+        public void TestToBase64WithCustomFormat()
+        {
+            var format = new ImageFormat(Guid.NewGuid());
+
+            var shot = Screenshot.TakeScreenshot(_validProcess);
+            shot.ToBase64(format);
+            shot.Dispose();
+        }
+
         #endregion
     }
 }
