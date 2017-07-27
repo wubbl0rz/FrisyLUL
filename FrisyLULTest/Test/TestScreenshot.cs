@@ -115,9 +115,11 @@ namespace FrisyLULTest.Test
         public void TestExtractWithZeroDestinations()
         {
             var shot = Screenshot.TakeScreenshot(_validProcess).Extract(0, 0, 100, 0);
+            Assert.AreEqual(shot.Height + shot.Width, 0);
             shot.Dispose();
 
             shot = Screenshot.TakeScreenshot(_validProcess).Extract(0, 0, 0, 100);
+            Assert.AreEqual(shot.Height + shot.Width, 0);
             shot.Dispose();
         }
 
