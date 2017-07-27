@@ -182,8 +182,10 @@ namespace FrisyLULTest.Test
         public void TestToBase64WithNullFormat()
         {
             var shot = Screenshot.TakeScreenshot(_validProcess);
-            shot.ToBase64(null);
+            var base64 = shot.ToBase64(null);
             shot.Dispose();
+            
+            Assert.IsTrue(string.IsNullOrEmpty(base64));
         }
 
         /// <summary>
@@ -195,8 +197,10 @@ namespace FrisyLULTest.Test
             var format = new ImageFormat(Guid.NewGuid());
 
             var shot = Screenshot.TakeScreenshot(_validProcess);
-            shot.ToBase64(format);
+            var base64 = shot.ToBase64(format);
             shot.Dispose();
+            
+            Assert.IsTrue(string.IsNullOrEmpty(base64));
         }
 
         #endregion
