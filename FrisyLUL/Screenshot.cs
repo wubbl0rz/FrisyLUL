@@ -13,14 +13,14 @@ namespace FrisyLUL
 {
     public class Screenshot : IDisposable
     {
-        private Bitmap bitmap;
+        public Bitmap Bitmap { get; private set; }
 
         private enum TernaryRasterOperations : uint
         {
             SRCCOPY = 0x00CC0020,
             CAPTUREBLT = 0x40000000
         }
-
+        
         [DllImport("gdi32.dll", EntryPoint = "BitBlt", SetLastError = true)]
         static extern bool BitBlt(IntPtr hdc,
             int nXDest,
@@ -33,8 +33,8 @@ namespace FrisyLUL
             TernaryRasterOperations dwRop);
 
         public bool IsEmpty { get; private set; }
-        public int Height => this.IsEmpty ? 0 : this.bitmap.Height;
-        public int Width => this.IsEmpty ? 0 : this.bitmap.Width;
+        public int Height => this.IsEmpty ? 0 : this.Bitmap.Height;
+        public int Width => this.IsEmpty ? 0 : this.Bitmap.Width;
 
         public Rectangle Bounds { get => new Rectangle(Point.Empty, new Size(this.Width, this.Height)); }
 
@@ -44,13 +44,13 @@ namespace FrisyLUL
         }
 
         private Screenshot(Bitmap bitmap) {
-            this.bitmap = bitmap;
+            this.Bitmap = bitmap;
         }
 
         public void Save(string filename) {
             if(this.IsEmpty) return;
 
-            this.bitmap.Save(filename);
+            this.Bitmap.Save(filename);
         }
 
         public string ToBase64(ImageFormat format)
@@ -59,7 +59,7 @@ namespace FrisyLUL
             
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                this.bitmap.Save(memoryStream, format);
+                this.Bitmap.Save(memoryStream, format);
                 return Convert.ToBase64String(memoryStream.ToArray());
             }
         }
@@ -70,7 +70,7 @@ namespace FrisyLUL
             Rectangle scRect = this.Bounds;
             scRect.Intersect(rect);
             
-            return scRect.IsEmpty ? new Screenshot() : new Screenshot(this.bitmap.Clone(scRect, this.bitmap.PixelFormat));
+            return scRect.IsEmpty ? new Screenshot() : new Screenshot(this.Bitmap.Clone(scRect, this.Bitmap.PixelFormat));
         }
 
         /// <summary>
@@ -81,13 +81,15 @@ namespace FrisyLUL
         public static Screenshot TakeScreenshot(string windowTitle) {
             windowTitle = windowTitle?.ToLower() ?? throw new ArgumentNullException(nameof(windowTitle));
 
-            var handle = Process.GetProcesses()
-                .Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle.ToLower().Contains(windowTitle))
-                .Select(proc => proc.MainWindowHandle)
-                .FirstOrDefault();
+            //var handle = Process.GetProcesses()
+            //    .Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle.ToLower().Contains(windowTitle))
+            //    .Select(proc => proc.MainWindowHandle)
+            //    .FirstOrDefault();
+
+            var handle = new IntPtr(67246);
 
             if (handle == IntPtr.Zero) return new Screenshot();
-
+            
             Graphics source = Graphics.FromHwnd(handle);
 
             if (source.IsVisibleClipEmpty) return new Screenshot();
@@ -108,19 +110,21 @@ namespace FrisyLUL
                 sourceDC,
                 0,
                 0,
-                TernaryRasterOperations.SRCCOPY | TernaryRasterOperations.CAPTUREBLT);
+                TernaryRasterOperations.SRCCOPY);
 
             source.ReleaseHdc();
             target.ReleaseHdc();
             source.Dispose();
             target.Dispose();
 
-            return new Screenshot(targetBitmap);
+            return new Screenshot(targetBitmap) { Handle = handle };
         }
+
+        public IntPtr Handle { get; private set; }
 
         public void Dispose()
         {
-            this.bitmap.Dispose();
+            this.Bitmap.Dispose();
         }
     }
 }
