@@ -72,7 +72,7 @@ namespace FrisyLUL
             
             return scRect.IsEmpty ? new Screenshot() : new Screenshot(this.Bitmap.Clone(scRect, this.Bitmap.PixelFormat));
         }
-
+        
         /// <summary>
         /// Takes a <see cref="Screenshot"/> of the first window with the given case insensitive <see cref="String"/> title
         /// </summary>
@@ -81,12 +81,14 @@ namespace FrisyLUL
         public static Screenshot TakeScreenshot(string windowTitle) {
             windowTitle = windowTitle?.ToLower() ?? throw new ArgumentNullException(nameof(windowTitle));
 
-            //var handle = Process.GetProcesses()
-            //    .Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle.ToLower().Contains(windowTitle))
+            //var h = Process.GetProcesses()
+            //    .Where(proc => proc.MainWindowHandle != IntPtr.Zero && proc.MainWindowTitle.ToLower().Contains("vlc"))
             //    .Select(proc => proc.MainWindowHandle)
             //    .FirstOrDefault();
 
-            var handle = new IntPtr(67246);
+            //Console.WriteLine(h);
+
+            var handle = new IntPtr(525702);
 
             if (handle == IntPtr.Zero) return new Screenshot();
             
